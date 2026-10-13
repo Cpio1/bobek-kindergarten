@@ -1,13 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
+import { imageSize } from "image-size";
 
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"]);
 const PUBLIC_DIR = path.join(process.cwd(), "public");
 const IMAGES_DIR = path.join(PUBLIC_DIR, "images");
 
+export type SizedImage = { src: string; width: number; height: number };
+
 export type SiteImages = {
   hero: string | null;
-  about: string | null;
+  about: SizedImage | null;
   gallery: string[];
 };
 
@@ -43,11 +46,29 @@ export function getSiteImages(): SiteImages {
   const imageFiles = listImages(IMAGES_DIR);
   const rootFiles = listImages(PUBLIC_DIR);
 
-  const find = (name: string) => {
+  const locate = (name: string) => {
     const inImages = imageFiles.find((f) => baseName(f) === name);
-    if (inImages) return toPublicSrc(IMAGES_DIR, inImages);
+    if (inImages) return { dir: IMAGES_DIR, file: inImages };
     const inRoot = rootFiles.find((f) => baseName(f) === name);
-    return inRoot ? toPublicSrc(PUBLIC_DIR, inRoot) : null;
+    return inRoot ? { dir: PUBLIC_DIR, file: inRoot } : null;
+  };
+  const find = (name: string) => {
+    const found = locate(name);
+    return found ? toPublicSrc(found.dir, found.file) : null;
+  };
+  // Реальные размеры фото — чтобы контейнер повторял его пропорции
+  const findSized = (name: string): SizedImage | null => {
+    const found = locate(name);
+    if (!found) return null;
+    const src = toPublicSrc(found.dir, found.file);
+    try {
+      const { width, height, orientation } = imageSize(fs.readFileSync(path.join(found.dir, found.file)));
+      // EXIF-поворот на 90° меняет ширину и высоту местами
+      const rotated = orientation !== undefined && orientation >= 5;
+      return rotated ? { src, width: height, height: width } : { src, width, height };
+    } catch {
+      return { src, width: 4, height: 3 };
+    }
   };
 
   // Убираем дубликаты с одинаковым именем, но разным расширением
@@ -60,5 +81,5 @@ export function getSiteImages(): SiteImages {
     gallery.push(toPublicSrc(IMAGES_DIR, f));
   }
 
-  return { hero: find("main-page"), about: find("main-page2"), gallery };
+  return { hero: find("main-page"), about: findSized("main-page2"), gallery };
 }

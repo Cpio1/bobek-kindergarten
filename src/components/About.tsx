@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { HeartHandshake, Home, Sprout } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import type { SizedImage } from "@/lib/images";
 import { Balloon, Cloud, KindergartenIllustration, Sparkle, Star } from "./Decorations";
 import { Reveal } from "./Reveal";
 import { SectionHeading } from "./SectionHeading";
@@ -13,34 +14,49 @@ const cardStyles = [
   { icon: Home, bg: "bg-sun/80", iconBg: "bg-white", shape: "rounded-[2rem_0.75rem_2rem_2rem]" },
 ];
 
-export function About({ image }: { image: string | null }) {
+export function About({ image }: { image: SizedImage | null }) {
   const { t } = useLanguage();
 
   return (
     <section id="about" aria-labelledby="about-title" className="relative bg-white py-16 md:py-24">
       <div className="container-site">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Фото */}
-          <Reveal className="relative mx-auto w-full max-w-[460px] lg:max-w-none">
-            <div className="relative aspect-[4/4.4] w-full">
-              <div aria-hidden="true" className="absolute -inset-3 rounded-[46%_54%_42%_58%/52%_44%_56%_48%] bg-sky/60" />
-              <div className="absolute inset-0 overflow-hidden rounded-[42%_58%_55%_45%/46%_42%_58%_54%] bg-sky-100 shadow-soft">
-                {image ? (
-                  <Image
-                    src={image}
-                    alt={t.about.photoAlt}
-                    fill
-                    sizes="(min-width: 1024px) 520px, (min-width: 640px) 460px, 90vw"
-                    className="object-cover"
-                  />
-                ) : (
-                  <KindergartenIllustration className="h-full w-full" />
-                )}
+          {/* Фото: контейнер повторяет пропорции снимка, поэтому он виден целиком */}
+          <Reveal className="relative mx-auto w-full max-w-[540px] px-2 py-4 sm:px-4 lg:max-w-none">
+            <div className="relative">
+              {/* Жёлтое органическое пятно позади */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-x-3 -inset-y-5 -rotate-3 rounded-[46%_54%_42%_58%/52%_44%_56%_48%] bg-sun/70 sm:-inset-x-5 sm:-inset-y-7"
+              />
+              {/* Голубая пунктирная обводка */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-2 rotate-2 rounded-[3.5rem_1.75rem_3.5rem_1.75rem/3rem_2rem_3rem_2rem] border-2 border-dashed border-sky-300 sm:-inset-3"
+              />
+              {/* Рамка */}
+              <div className="relative rounded-[3rem_1.5rem_3rem_1.5rem/2.6rem_1.75rem_2.6rem_1.75rem] bg-white p-2 shadow-glow sm:p-2.5">
+                <div
+                  className="relative w-full overflow-hidden rounded-[2.6rem_1.1rem_2.6rem_1.1rem/2.2rem_1.3rem_2.2rem_1.3rem] bg-sky-100"
+                  style={{ aspectRatio: image ? `${image.width} / ${image.height}` : "4 / 3" }}
+                >
+                  {image ? (
+                    <Image
+                      src={image.src}
+                      alt={t.about.photoAlt}
+                      fill
+                      sizes="(min-width: 1024px) 540px, (min-width: 640px) 500px, 92vw"
+                      className="object-contain"
+                    />
+                  ) : (
+                    <KindergartenIllustration className="h-full w-full" />
+                  )}
+                </div>
               </div>
-              <Cloud className="absolute -top-4 right-4 w-24 animate-float-slow drop-shadow-sm" />
-              <Balloon color="#FFE680" className="absolute -bottom-2 -left-4 w-10 animate-float" />
-              <Balloon color="#B8E4F9" className="absolute bottom-6 left-5 w-8 animate-float-slow [animation-delay:1.2s]" />
-              <Star className="absolute top-1/4 -right-3 w-7 animate-twinkle text-sun-400" />
+              <Cloud className="absolute -top-9 right-6 w-20 animate-float-slow drop-shadow-sm sm:w-24" />
+              <Balloon color="#FFE680" className="absolute -bottom-8 -left-3 w-9 animate-float sm:w-10" />
+              <Balloon color="#B8E4F9" className="absolute -bottom-5 left-6 w-7 animate-float-slow [animation-delay:1.2s] sm:w-8" />
+              <Star className="absolute top-1/4 -right-4 w-7 animate-twinkle text-sun-400" />
             </div>
           </Reveal>
 
