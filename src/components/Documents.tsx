@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, FileText, FolderOpen, Hourglass } from "lucide-react";
+import { ExternalLink, FileText, FolderOpen } from "lucide-react";
 import { DOCUMENTS_URL } from "@/config/site";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { Cloud, Sparkle, Star } from "./Decorations";
@@ -8,7 +8,6 @@ import { Reveal } from "./Reveal";
 
 export function Documents() {
   const { t } = useLanguage();
-  const hasLink = DOCUMENTS_URL.trim().length > 0;
 
   return (
     <section id="documents" aria-labelledby="documents-title" className="bg-white pb-16 md:pb-24">
@@ -47,24 +46,11 @@ export function Documents() {
               </div>
 
               <div className="flex justify-center">
-                {hasLink ? (
-                  <a href={DOCUMENTS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                    <FileText size={18} aria-hidden="true" />
-                    {t.documents.button}
-                    <ExternalLink size={16} aria-hidden="true" />
-                  </a>
-                ) : (
-                  <div className="flex flex-col items-center gap-3">
-                    <span className="btn cursor-not-allowed bg-white/70 text-ink-soft" aria-disabled="true">
-                      <FileText size={18} aria-hidden="true" />
-                      {t.documents.button}
-                    </span>
-                    <p role="status" className="inline-flex items-center gap-1.5 text-sm font-bold text-ink">
-                      <Hourglass size={15} aria-hidden="true" />
-                      {t.documents.soon}
-                    </p>
-                  </div>
-                )}
+                <a href={DOCUMENTS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                  <FolderOpen size={18} aria-hidden="true" />
+                  {t.documents.button}
+                  <ExternalLink size={16} aria-hidden="true" />
+                </a>
               </div>
             </div>
           </div>

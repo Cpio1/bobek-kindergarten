@@ -3,13 +3,8 @@
  * Измените значения здесь — они автоматически обновятся на всём сайте.
  */
 
-/**
- * Ссылка на папку Google Drive с документами.
- * Пока ссылка пустая, на сайте показывается сообщение
- * «Құжаттар сілтемесі жақында қосылады».
- * Пример: "https://drive.google.com/drive/folders/XXXXXXXX"
- */
-export const DOCUMENTS_URL = "";
+/** Ссылка на папку Google Drive с документами (открывается в новой вкладке). */
+export const DOCUMENTS_URL = "https://drive.google.com/drive/folders/17sDV8FcFTqq0geG5OMRMa-oF2a7fq3Z0";
 
 /** Адрес сайта после деплоя (используется для SEO). */
 export const SITE_URL = "https://bobek-balabakshasi.vercel.app";
